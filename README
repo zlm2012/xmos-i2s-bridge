@@ -1,0 +1,16 @@
+This is an example application for the XCommon CMake build system.
+
+To build:
+  cmake -G "Unix Makefiles" -B build
+  xmake -C build
+
+To make factory image:
+  cd bin
+  xflash xmos-ddc.xe -o factory.bin
+
+To make dfu image:
+  cd bin
+  xflash --factory-version 15.3 --upgrade 1 xmos-ddc.xe -o upgrade1.bin
+
+To flash dfu image:
+  dfu-util -d 20b1:0018,20b1:d018 -D upgrade1.bin -R
