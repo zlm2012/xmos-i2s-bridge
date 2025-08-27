@@ -7,9 +7,6 @@
 
 #define DAC_CHIP DAC_ES9039
 
-#define ESS_ADDR 0x48
-#define CS_ADDR 0x30
-
 #define CLK_5356 1
 #define CLK_5351 2
 

@@ -38,10 +38,6 @@ static inline void ES9039_config(int sync, client interface i2c_master_if i2c) {
     ES9039_REGWRITE(0xF5, 0x00, i2c);
 }
 
-static inline void ES9039_resol(unsigned freq, client interface i2c_master_if i2c) {
-    //ES9039_REGWRITE(0x04, (freq % 48000 == 0) ? (384000 / freq - 1) : (352800 / freq - 1), i2c);
-}
-
 static inline void ES9039_mute(unsigned mute, client interface i2c_master_if i2c) {
     if (mute) {
         ES9039_REGWRITE(0x56, 0x03, i2c);

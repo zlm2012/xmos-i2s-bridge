@@ -45,8 +45,7 @@ static inline void audio_init(unsigned freq, client interface i2c_master_if i2c)
 #if CLK_CHIP == CLK_5356
     //SI5356A_2x_mclk(i2c);
     SI5356A_switch_mclk(freq, i2c);
-#endif
-#if CLK_CHIP == CLK_5351
+#elif CLK_CHIP == CLK_5351
     status = SI5351A_init(i2c);
 #endif
     delay_microseconds(10);
@@ -75,8 +74,7 @@ static inline void audio_init(unsigned freq, client interface i2c_master_if i2c)
         delay_milliseconds(1000);
         p_freq_led <: 0;
     }
-#endif
-#if DAC_CHIP == DAC_ES9039
+#elif DAC_CHIP == DAC_ES9039
     ES9039_config(ES9039_SYNC, i2c);
 #endif
 }
@@ -89,8 +87,7 @@ static inline void audio_resol(unsigned freq, unsigned depth, client interface i
 
 #if CLK_CHIP == CLK_5356
     SI5356A_disable_mclk(i2c);
-#endif
-#if CLK_CHIP == CLK_5351
+#elif CLK_CHIP == CLK_5351
     SI5351A_disable_clk(i2c);
 #endif
 
@@ -98,14 +95,10 @@ static inline void audio_resol(unsigned freq, unsigned depth, client interface i
     delay_microseconds(10);
     BDEKV_resol(freq, i2c);
 #endif
-#if DAC_CHIP == DAC_ES9039
-    ES9039_resol(freq, i2c);
-#endif
 
 #if CLK_CHIP == CLK_5356
     SI5356A_switch_mclk(freq, i2c);
-#endif
-#if CLK_CHIP == CLK_5351
+#elif CLK_CHIP == CLK_5351
     SI5351A_switch_mclk(freq, DAC_CHIP == DAC_ES9039, i2c);
     SI5351A_switch_i2s_clk(freq, depth, i2c);
     SI5351A_enable_clk(i2c);
@@ -122,8 +115,7 @@ static inline void audio_mute(unsigned mute, client interface i2c_master_if i2c)
     muted = mute;
 #if DAC_CHIP == DAC_BDEKV
     BDEKV_mute(mute, i2c);
-#endif
-#if DAC_CHIP == DAC_ES9039
+#elif DAC_CHIP == DAC_ES9039
     ES9039_mute(mute, i2c);
 #endif
 }
