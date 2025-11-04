@@ -23,8 +23,6 @@
 #define PORT_I2S_DAC0      PORT_I2S_DAC_DATA /* Name conversion from XN file */
 #define PORT_I2S_ADC0      PORT_I2S_ADC_DATA /* Name conversion From XN file */
 
-#define CODEC_MASTER 1
-
 #ifndef OUTPUT_FORMAT_COUNT
 #define OUTPUT_FORMAT_COUNT (3)
 #endif

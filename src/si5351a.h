@@ -73,7 +73,7 @@ static inline void SI5351A_enable_clk(client interface i2c_master_if i2c)
 
 static inline void SI5351A_switch_i2s_clk(unsigned lrck, unsigned width, client interface i2c_master_if i2c)
 {
-#ifndef INIT_ONLY
+#if CODEC_MASTER == 1
     if (width == 16) {
         switch (lrck) {
         case 44100:

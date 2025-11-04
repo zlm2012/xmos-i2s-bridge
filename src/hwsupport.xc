@@ -4,10 +4,15 @@
 #include <xs1.h>
 #include <assert.h>
 #include <platform.h>
+#include <string.h>
 
 #include "xua.h"
 
 #include "config.h"
+
+#ifdef ENABLE_OLED
+#include "oled.h"
+#endif
 
 #if CLK_CHIP == CLK_5356
 #include "si5356a.h"
@@ -34,11 +39,12 @@ typedef enum
 
 on tile[1]: port p_i2c_sda = PORT_I2C_SDA1;
 on tile[1]: port p_i2c_scl = PORT_I2C_SCL1;
-on tile[1]: out buffered port:1 p_en_ctrl = PORT_ENCTRL;
+on tile[1]: out port p_en_ctrl = PORT_ENCTRL;
 on tile[1]: out buffered port:1 p_freq_led = PORT_FREQ_LED;
 on tile[1]: out port p_depth_led = PORT_DEPTH_LED;
 
 static int muted = 0;
+static unsigned oled_color = 0;
 
 static inline void audio_init(unsigned freq, client interface i2c_master_if i2c) {
     unsigned status = 0;
@@ -52,6 +58,13 @@ static inline void audio_init(unsigned freq, client interface i2c_master_if i2c)
     p_en_ctrl <: 1;
     p_freq_led <: 1;
     delay_milliseconds(1);
+#ifdef ENABLE_OLED
+    OLED_init(i2c);
+    OLED_color_invert(oled_color, i2c);
+    OLED_rotate(0, i2c);
+    OLED_clear(i2c);
+    OLED_print(0, 1, "     KHz", 18, i2c);
+#endif
 #if DAC_CHIP == DAC_BDEKV
     unsigned ver = BDEKV_init(freq, i2c);
     delay_microseconds(10);
@@ -80,6 +93,22 @@ static inline void audio_init(unsigned freq, client interface i2c_master_if i2c)
 }
 
 static inline void audio_resol(unsigned freq, unsigned depth, client interface i2c_master_if i2c) {
+#ifdef ENABLE_OLED
+    char *freq_str;
+    switch (freq) {
+        case 44100:  freq_str=" 44.1"; break;
+        case 48000:  freq_str=" 48.0"; break;
+        case 88200:  freq_str=" 88.2"; break;
+        case 96000:  freq_str=" 96.0"; break;
+        case 176400: freq_str="176.4"; break;
+        case 192000: freq_str="192.0"; break;
+        case 352800: freq_str="352.8"; break;
+        case 384000: freq_str="384.0"; break;
+        case 705600: freq_str="705.6"; break;
+        case 768000: freq_str="768.0"; break;
+    }
+    OLED_print(0, 1, freq_str, 18, i2c);
+#endif
 #if DAC_CHIP == DAC_BDEKV
     BDEKV_soft_reset(1, i2c);
     delay_microseconds(10);
@@ -123,10 +152,11 @@ static inline void audio_mute(unsigned mute, client interface i2c_master_if i2c)
 [[combinable]]
 void AudioHwRemote2(chanend c, client interface i2c_master_if i2c)
 {
-    unsigned freq = 48000, depth = 32, status = 0;
-    p_en_ctrl <: 0;
+    unsigned freq = 48000, depth = 32;
+    //p_en_ctrl <: 0;
     timer t;
     uint32_t time ;
+    unsigned oled_counter;
     const uint32_t period = 100000000;
     while(1)
     {
@@ -162,13 +192,12 @@ void AudioHwRemote2(chanend c, client interface i2c_master_if i2c)
                 }
             break;
             case t when timerafter ( time ) :> void:
-#if CLK_CHIP == CLK_5351
-                status = SI5351A_status(i2c);
-                if (status & 0x20) {
-                    delay_milliseconds(1000);
-                    p_freq_led <: 0;
-                } else {
-                    p_freq_led <: 1;
+#ifdef ENABLE_OLED
+                oled_counter++;
+                if (oled_counter >= 60) {
+                    oled_color = !oled_color;
+                    OLED_color_invert(oled_color, i2c);
+                    oled_counter = 0;
                 }
 #endif
                 time += period ;
