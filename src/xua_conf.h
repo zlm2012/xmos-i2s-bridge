@@ -8,7 +8,7 @@
 #ifndef _XUA_CONF_H_
 #define _XUA_CONF_H_
 
-#include "user_main.h"
+//#include "user_main.h"
 #include "config.h"
 
 /*
@@ -30,8 +30,8 @@
 #define PRODUCT_STR_A2           "MRZM XMOS xCORE (UAC2.0)"
 
 /* Tile defines */
-#define AUDIO_IO_TILE      (0)
-#define XUD_TILE           (0)
+#define XUA_AUDIO_IO_TILE_NUM      (0)
+#define XUA_XUD_TILE_NUM           (0)
 
 /* Mixer core disabled by default */
 #ifndef MIXER

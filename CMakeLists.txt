@@ -15,7 +15,7 @@ set(APP_COMPILER_FLAGS -O3
                        -fxscope
                        -DUAC_FORCE_FEEDBACK_EP=0)
 
-set(APP_DEPENDENT_MODULES "lib_xua(v5.1.0)"
+set(APP_DEPENDENT_MODULES "lib_xua(v5.2.0)"
                           "lib_xud"
                           "lib_i2c")
 

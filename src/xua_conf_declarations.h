@@ -1,0 +1,1 @@
+chan c_audiohw;
